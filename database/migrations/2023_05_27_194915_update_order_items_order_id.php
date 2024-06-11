@@ -3,27 +3,25 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Doctrine\DBAL\Schema\AbstractSchemaManager; // Import this class
 
 return new class extends Migration
 {
     public function up()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            // Remove the Foreign Key if it exists before creating a new one.
-            if (Schema::hasTable('order_items')) {
-                $columns = Schema::getColumnListing('order_items');
-                if (in_array('order_id', $columns)) { // Check if the column exists.
-                    $foreignKey = collect(Schema::getConnection()->getDoctrineSchemaManager()->listTableForeignKeys('order_items'))
-                        ->first(function ($fk) {
-                            return $fk->getColumns() === ['order_id'];
-                        });
+            // Hapus Foreign Key jika ada
+            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
+            $foreignKeys = $schemaManager->listTableForeignKeys('order_items');
 
-                    if ($foreignKey !== null) {
-                        $table->dropForeign($foreignKey->getName());
-                    }
+            foreach ($foreignKeys as $foreignKey) {
+                if ($foreignKey->getForeignTableName() == 'orders' && $foreignKey->getLocalColumns()[0] == 'order_id') {
+                    $table->dropForeign($foreignKey->getName());
+                    break; // Hentikan perulangan setelah foreign key dihapus
                 }
             }
 
+            // Tambahkan foreign key baru dengan cascadeOnDelete
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete(); 
         });
     }
@@ -31,22 +29,19 @@ return new class extends Migration
     public function down()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            if (Schema::hasTable('order_items')) {
-                $columns = Schema::getColumnListing('order_items');
-                if (in_array('order_id', $columns)) { // Check if the column exists.
-                    $foreignKey = collect(Schema::getConnection()->getDoctrineSchemaManager()->listTableForeignKeys('order_items'))
-                        ->first(function ($fk) {
-                            return $fk->getColumns() === ['order_id'];
-                        });
+            // Hapus foreign key dengan cascade on delete
+            $schemaManager = Schema::getConnection()->getDoctrineSchemaManager();
+            $foreignKeys = $schemaManager->listTableForeignKeys('order_items');
 
-                    if ($foreignKey !== null) {
-                        $table->dropForeign($foreignKey->getName());
-                    }
+            foreach ($foreignKeys as $foreignKey) {
+                if ($foreignKey->getForeignTableName() == 'orders' && $foreignKey->getLocalColumns()[0] == 'order_id') {
+                    $table->dropForeign($foreignKey->getName());
+                    break; // Hentikan perulangan setelah foreign key dihapus
                 }
             }
 
+            // Tambahkan kembali foreign key tanpa cascade on delete
             $table->foreign('order_id')->references('id')->on('orders');
         });
     }
 };
-
