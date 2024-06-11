@@ -1,25 +1,24 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Doctrine\DBAL\Schema\AbstractSchemaManager; // Import this class
 
 return new class extends Migration
 {
     public function up()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            // Remove the Foreign Key if it exists before creating a new one.
-            if (Schema::hasTable('order_items')) {
-                $foreignKeys = $table->getForeignKeyConstraints();
-                foreach ($foreignKeys as $foreignKey) {
-                    if ($foreignKey->getColumns()[0] == 'order_id'
-                        && $foreignKey->getOn()[0] == 'orders'
-                        && $foreignKey->getReferences()[0] == 'id') {
+            // Get the Doctrine Schema Manager to access the foreign keys
+            $schemaManager = $table->getConnection()->getDoctrineSchemaManager();
+            $foreignKeys = $schemaManager->listTableForeignKeys('order_items');
 
-                        Schema::table('order_items', function (Blueprint $table) use ($foreignKey) {
-                            $table->dropForeign($foreignKey->getName());
-                        });
-                    }
+            // Find the foreign key referencing `orders(id)` and drop it
+            foreach ($foreignKeys as $foreignKey) {
+                if ($foreignKey->getForeignTableName() == 'orders' && $foreignKey->getLocalColumns() == ['order_id']) {
+                    $table->dropForeign($foreignKey->getName());
+                    break; // Stop the loop after dropping the foreign key
                 }
             }
             
@@ -30,21 +29,19 @@ return new class extends Migration
     public function down()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            if (Schema::hasTable('order_items')) {
-                $foreignKeys = $table->getForeignKeyConstraints();
-                foreach ($foreignKeys as $foreignKey) {
-                    if ($foreignKey->getColumns()[0] == 'order_id'
-                        && $foreignKey->getOn()[0] == 'orders'
-                        && $foreignKey->getReferences()[0] == 'id') {
+            // Get the Doctrine Schema Manager to access the foreign keys
+            $schemaManager = $table->getConnection()->getDoctrineSchemaManager();
+            $foreignKeys = $schemaManager->listTableForeignKeys('order_items');
 
-                        Schema::table('order_items', function (Blueprint $table) use ($foreignKey) {
-                            $table->dropForeign($foreignKey->getName());
-                        });
-                    }
+            // Find the foreign key referencing `orders(id)` and drop it
+            foreach ($foreignKeys as $foreignKey) {
+                if ($foreignKey->getForeignTableName() == 'orders' && $foreignKey->getLocalColumns() == ['order_id']) {
+                    $table->dropForeign($foreignKey->getName());
+                    break; // Stop the loop after dropping the foreign key
                 }
             }
-            $table->foreign('order_id')->references('id')->on('orders');
+
+            $table->foreign('order_id')->references('id')->on('orders'); 
         });
     }
 };
-
