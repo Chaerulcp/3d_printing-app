@@ -6,28 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::table('order_items', function(Blueprint $table) {
-            $table->dropForeign(['order_id']);
+        Schema::table('order_items', function (Blueprint $table) {
+            // Check if the foreign key exists before attempting to drop it
+            if (Schema::hasColumn('order_items', 'order_id')) {
+                $table->dropForeign('order_items_order_id_foreign'); 
+            }
+
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::table('order_items', function(Blueprint $table) {
-            $table->dropForeign(['order_id']);
+        Schema::table('order_items', function (Blueprint $table) {
+            // Check if the foreign key exists before attempting to drop it
+            if (Schema::hasColumn('order_items', 'order_id')) {
+                $table->dropForeign('order_items_order_id_foreign'); 
+            }
             $table->foreign('order_id')->references('id')->on('orders');
         });
     }
