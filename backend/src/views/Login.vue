@@ -1,5 +1,5 @@
 <template>
-  <GuestLayout title="StreetFood Admin Panel">
+  <GuestLayout title="3D Kreasi Coklat Admin Panel">
     <form class="mt-8 space-y-6" method="POST" @submit.prevent="login">
       <div v-if="errorMsg" class="flex items-center justify-between py-3 px-5 bg-red-500 text-white rounded">
         {{ errorMsg }}

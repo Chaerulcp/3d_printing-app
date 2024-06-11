@@ -6,7 +6,7 @@
   },
   "resources/sass/app.scss": {
     "file": "assets/app.5ca575e5.css",
-    "src": "resources/css/app.scss",
+    "src": "resources/sass/app.scss",
     "isEntry": true
   }
 }
