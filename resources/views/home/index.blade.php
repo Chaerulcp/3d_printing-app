@@ -13,7 +13,7 @@
                 background-image: url('{{ asset('images/background.png') }}');
                 color: white;
             }
-
+    
             /* Style untuk section utama */
             #home-section {
                 min-height: 100vh;
@@ -24,7 +24,7 @@
                 padding: 40px;
                 position: relative;
             }
-
+    
             /* Style untuk overlay gelap */
             /* #home-section::before {
                 content: "";
@@ -36,7 +36,7 @@
                 background: rgba(255, 255, 255, 0.5);
                 z-index: 1;
             } */
-
+    
             /* Style untuk container di dalam section utama */
             #home-section .home-container {
                 position: relative;
@@ -47,35 +47,36 @@
                 width: 90%;
                 max-width: 1200px;
                 background: rgba(255, 255, 255, 0.5);
-                
                 padding: 20px;
                 border-radius: 10px;
+                flex-wrap: wrap; /* Tambahkan ini agar flex item membungkus pada layar kecil */
             }
-
+    
             /* Style untuk content di dalam container */
             #home-section .home-content {
                 width: 50%;
                 text-align: left;
                 padding: 20px;
+                box-sizing: border-box;
             }
-
+    
             /* Style untuk judul (h1) */
             #home-section .home-content h1 {
                 font-size: 2.5em;
                 margin-bottom: 20px;
                 font-weight: 700;
                 /* color: rgb(0, 132, 255) */
-                color: black
+                color: black;
             }
-
+    
             /* Style untuk paragraf (p) */
             #home-section .home-content p {
                 font-size: 1.2em;
                 line-height: 1.6;
                 margin-bottom: 30px;
-                color: black
+                color: black;
             }
-
+    
             /* Style untuk tombol explore */
             #home-section .explore-button {
                 background-color: #5293e6;
@@ -88,37 +89,54 @@
                 transition: background-color 0.3s ease;
                 font-weight: 500;
             }
-
+    
             #home-section .explore-button:hover {
                 background-color: #1c3d72;
             }
-
+    
             /* Style untuk gambar */
             #home-section .home-background-image {
                 width: 40%;
+                box-sizing: border-box;
             }
-
+    
             #home-section .home-background-image img {
                 width: 100%;
                 height: auto;
                 border-radius: 10px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
-
+    
             /* Media query untuk layar yang lebih kecil */
             @media (max-width: 768px) {
                 #home-section .home-container {
                     flex-direction: column;
                     text-align: center;
                 }
-
+    
                 #home-section .home-content, #home-section .home-background-image {
                     width: 100%;
                     padding: 0;
                 }
-
+    
                 #home-section .home-background-image {
                     margin-top: 20px;
+                }
+            }
+    
+            /* Media query untuk layar yang sangat kecil */
+            @media (max-width: 480px) {
+                #home-section .home-content h1 {
+                    font-size: 1.8em;
+                }
+    
+                #home-section .home-content p {
+                    font-size: 1em;
+                }
+    
+                #home-section .explore-button {
+                    padding: 10px 20px;
+                    font-size: 1em;
                 }
             }
         </style>
@@ -128,7 +146,7 @@
         <div id="navbar">
             <!-- Isi navbar di sini, jika ada -->
         </div>
-
+    
         <!-- Main Section -->
         <div id="home-section">
             <div class="home-container">
@@ -136,8 +154,7 @@
                     <h1>"Kreasikan Imajinasi Anda dalam Bentuk Coklat"</h1>
                     <p>Selamat datang di 3D Kreasi Coklat, tempat di mana ide-ide manis Anda menjadi kenyataan dengan teknologi 3D printing tercanggih. Dari desain unik hingga detail yang memukau, biarkan kami membantu Anda menciptakan cetakan coklat yang sempurna untuk setiap kesempatan.</p>
                     <a href="{{ route('3d_models') }}">
-                    <button  class="explore-button">Explore More</button>
-
+                    <button class="explore-button">Explore More</button>
                     </a>
                 </div>
                 <div class="home-background-image">
@@ -147,4 +164,5 @@
         </div>
     </body>
     </html>
-</x-app-layout>
+    </x-app-layout>
+    
